@@ -1,0 +1,35 @@
+graph TB
+    subgraph Frontend[Frontend - Vercel]
+        R[React App]
+        subgraph Components
+            A[Auth Component]
+            C[CreateNote Component]
+            V[ViewNote Component]
+            H[AccountHistory Component]
+        end
+    end
+
+    subgraph Backend[Backend - Render]
+        D[Django REST API]
+        subgraph Apps
+            UA[Users App]
+            NA[Notes App]
+        end
+        M[Middleware Layer]
+    end
+
+    subgraph Database[Database Layer]
+        S[(Supabase PostgreSQL)]
+    end
+
+    subgraph Security[Security Layer]
+        JWT[JWT Authentication]
+        CORS[CORS Protection]
+        SSL[SSL/TLS]
+    end
+
+    R --> |API Requests| D
+    D --> |Data Storage| S
+    D --> |Auth| JWT
+    M --> |Security| CORS
+    M --> |Encryption| SSL

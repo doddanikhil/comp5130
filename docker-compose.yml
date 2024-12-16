@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000" # Exposing backend on port 8000
+    environment:
+      - SUPABASE_URL=https://xxbolfbfhkoxyunrjmlo.supabase.co
+      - SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4Ym9sZmJmaGtveHl1bnJqbWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM2MzMwODksImV4cCI6MjA0OTIwOTA4OX0.4wGuisusFmwZWHFZf9TIGPlCcRclfn3kcOwKF-AW6ag
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000" # Exposing frontend on port 3000
+    environment:
+      - REACT_APP_BACKEND_URL=https://ndsecure.onrender.com
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

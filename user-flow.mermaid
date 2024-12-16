@@ -1,0 +1,30 @@
+sequenceDiagram
+    actor User
+    participant Frontend
+    participant Backend
+    participant Database
+
+    User->>Frontend: Access Application
+    alt Not Authenticated
+        Frontend->>Backend: Login/Register Request
+        Backend->>Database: Validate Credentials
+        Database-->>Backend: Return User Data
+        Backend-->>Frontend: JWT Token
+    end
+
+    User->>Frontend: Create Secure Note
+    Frontend->>Backend: POST /api/notes
+    Backend->>Database: Store Note
+    Database-->>Backend: Confirmation
+    Backend-->>Frontend: Note Link
+
+    User->>Frontend: View Note
+    Frontend->>Backend: GET /api/notes/:id
+    Backend->>Database: Fetch Note
+    alt Password Protected
+        Backend-->>Frontend: Request Password
+        User->>Frontend: Enter Password
+        Frontend->>Backend: Validate Password
+    end
+    Database-->>Backend: Note Data
+    Backend-->>Frontend: Display Note
